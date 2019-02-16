@@ -51,7 +51,7 @@ public class CursosResources {
 			@PathVariable("id") Long id
 		) {
 		
-		// Tentar garantir que o livro não terá o id nulo
+		// Tentar garantir que o curso não terá o id nulo
 		curso.setId(id);
 		
 		try {

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,18 +18,19 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.startworksgroup.socialcourses.domain.Instituicao;
-import com.startworksgroup.socialcourses.repository.InstituicoesRepository;
+import com.startworksgroup.socialcourses.services.InstituicoesService;
+import com.startworksgroup.socialcourses.services.exceptions.InstituicaoNaoEncontradaException;
 
 @RestController
 @RequestMapping("/instituicoes")
 public class InstituicoesResources {
 
 	@Autowired
-	private InstituicoesRepository instituicoesRepository;
+	private InstituicoesService instituicoesService;
 	
 	@GetMapping
 	public ResponseEntity<List<Instituicao>> listar() {
-		List<Instituicao> result = instituicoesRepository.findAll();
+		List<Instituicao> result = instituicoesService.listar();
 		
 		return ResponseEntity.status(HttpStatus.OK).body(result);
 		
@@ -38,7 +38,7 @@ public class InstituicoesResources {
 	
 	@PostMapping
 	public ResponseEntity<Void> salvar(@RequestBody Instituicao instituicao) {
-		instituicao = instituicoesRepository.save(instituicao);	
+		instituicao = instituicoesService.salvar(instituicao);	
 		
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
 				.path("/{id}").buildAndExpand(instituicao.getId()).toUri();
@@ -51,17 +51,26 @@ public class InstituicoesResources {
 			@RequestBody Instituicao instituicao, 
 			@PathVariable("id") Long id
 		) {
+		
+		// Tentar garantir que a instituicao não terá o id nulo
 		instituicao.setId(id);
-		instituicoesRepository.save(instituicao);
+		
+		try {
+			instituicoesService.atualizar(instituicao);
+		} catch (InstituicaoNaoEncontradaException e) {
+			ResponseEntity.notFound().build();
+		}
 		
 		return ResponseEntity.noContent().build();
 	}
 	@GetMapping("{id}")
 	public ResponseEntity<?> buscar(@PathVariable("id") Long id) {
 		
-		Optional<Instituicao> instituicao = instituicoesRepository.findById(id);
+		Optional<Instituicao> instituicao = null;
 		
-		if(!instituicao.isPresent()) {
+		try {
+			instituicoesService.buscar(id);
+		} catch (InstituicaoNaoEncontradaException e) {
 			return ResponseEntity.notFound().build();
 		}
 		
@@ -71,8 +80,8 @@ public class InstituicoesResources {
 	@DeleteMapping("{id}")
 	public ResponseEntity<Void> deletar(@PathVariable("id") Long id) {
 		try {
-			instituicoesRepository.deleteById(id);
-		} catch (EmptyResultDataAccessException e) {
+			instituicoesService.deletar(id);
+		} catch (InstituicaoNaoEncontradaException e) {
 			return ResponseEntity.notFound().build();
 		}
 		

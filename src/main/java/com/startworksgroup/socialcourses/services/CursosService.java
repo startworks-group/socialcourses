@@ -5,12 +5,13 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.stereotype.Service;
 
 import com.startworksgroup.socialcourses.domain.Curso;
 import com.startworksgroup.socialcourses.repository.CursosRepository;
 import com.startworksgroup.socialcourses.services.exceptions.CursoNaoEncontradoException;
 
-
+@Service
 public class CursosService {
 
 	@Autowired
@@ -31,7 +32,10 @@ public class CursosService {
 	}
 	
 	public Curso salvar(Curso curso) {
+		
+		// Tentar garantir que o curso terá o id nulo
 		curso.setId(null);
+		
 		return cursosRepository.save(curso);
 	}
 	
