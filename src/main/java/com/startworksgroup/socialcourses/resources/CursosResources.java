@@ -20,6 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.startworksgroup.socialcourses.domain.Curso;
 import com.startworksgroup.socialcourses.services.CursosService;
 import com.startworksgroup.socialcourses.services.exceptions.CursoNaoEncontradoException;
+import com.startworksgroup.socialcourses.services.exceptions.InstituicaoNaoEncontradaException;
 
 @RestController
 @RequestMapping("/cursos")
@@ -36,9 +37,14 @@ public class CursosResources {
 	}
 	
 	@PostMapping
-	public ResponseEntity<Void> salvar(@RequestBody Curso curso) {
-		curso = cursosService.salvar(curso);
-	
+	public ResponseEntity<?> salvar(@RequestBody Curso curso) {
+		
+		try {
+			curso = cursosService.salvar(curso);
+		} catch (InstituicaoNaoEncontradaException e) {
+			return ResponseEntity.badRequest().build();
+		}
+		
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
 				.path("/{id}").buildAndExpand(curso.getId()).toUri();
 		

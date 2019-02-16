@@ -8,6 +8,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.startworksgroup.socialcourses.domain.Curso;
+import com.startworksgroup.socialcourses.domain.Instituicao;
 import com.startworksgroup.socialcourses.repository.CursosRepository;
 import com.startworksgroup.socialcourses.services.exceptions.CursoNaoEncontradoException;
 
@@ -16,6 +17,9 @@ public class CursosService {
 
 	@Autowired
 	private CursosRepository cursosRepository;
+	
+	@Autowired
+	private InstituicoesService instituicoesService;
 	
 	public List<Curso> listar(){
 		return cursosRepository.findAll();
@@ -35,6 +39,15 @@ public class CursosService {
 		
 		// Tentar garantir que o curso terá o id nulo
 		curso.setId(null);
+		
+		Instituicao instituicao = curso.getInstituicao();
+		
+		// Evitar NullPointException
+		if(instituicao == null) {
+			instituicoesService.throwInstituicaoNullException();
+		}
+		
+		instituicoesService.buscar(instituicao.getId());
 		
 		return cursosRepository.save(curso);
 	}
