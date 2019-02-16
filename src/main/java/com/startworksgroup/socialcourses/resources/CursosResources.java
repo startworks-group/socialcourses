@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,25 +18,26 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.startworksgroup.socialcourses.domain.Curso;
-import com.startworksgroup.socialcourses.repository.CursosRepository;
+import com.startworksgroup.socialcourses.services.CursosService;
+import com.startworksgroup.socialcourses.services.exceptions.CursoNaoEncontradoException;
 
 @RestController
 @RequestMapping("/cursos")
 public class CursosResources {
 
 	@Autowired
-	private CursosRepository cursosRepository;
+	private CursosService cursosService;
 	
 	@GetMapping
 	public ResponseEntity<List<Curso>> listar() {
-		List<Curso> result = cursosRepository.findAll();
+		List<Curso> result = cursosService.listar();
 		
 		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 	
 	@PostMapping
 	public ResponseEntity<Void> salvar(@RequestBody Curso curso) {
-		curso = cursosRepository.save(curso);
+		curso = cursosService.salvar(curso);
 	
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
 				.path("/{id}").buildAndExpand(curso.getId()).toUri();
@@ -50,16 +50,25 @@ public class CursosResources {
 			@RequestBody Curso curso, 
 			@PathVariable("id") Long id
 		) {
-		curso.setId(id);
-		cursosRepository.save(curso);	
 		
+		// Tentar garantir que o livro não terá o id nulo
+		curso.setId(id);
+		
+		try {
+			cursosService.atualizar(curso);
+		} catch (CursoNaoEncontradoException e) {
+			return ResponseEntity.notFound().build();
+		}
+			
 		return ResponseEntity.noContent().build();
 	}
 	@GetMapping("{id}")
 	public ResponseEntity<?> buscar(@PathVariable("id") Long id) {
-		Optional<Curso> curso = cursosRepository.findById(id);
+		Optional<Curso> curso = null;
 		
-		if(!curso.isPresent()) {
+		try {
+			curso = cursosService.buscar(id);
+		} catch (CursoNaoEncontradoException e) {
 			return ResponseEntity.notFound().build();
 		}
 		
@@ -70,8 +79,8 @@ public class CursosResources {
 	public ResponseEntity<Void> deletar(@PathVariable("id") Long id) {
 
 		try {
-			cursosRepository.deleteById(id);
-		} catch (EmptyResultDataAccessException e) {
+			cursosService.deletar(id);
+		} catch (CursoNaoEncontradoException e) {
 			return ResponseEntity.notFound().build();
 		}
 		
