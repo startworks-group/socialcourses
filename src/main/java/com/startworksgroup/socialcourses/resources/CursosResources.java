@@ -19,8 +19,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.startworksgroup.socialcourses.domain.Curso;
 import com.startworksgroup.socialcourses.services.CursosService;
-import com.startworksgroup.socialcourses.services.exceptions.CursoNaoEncontradoException;
-import com.startworksgroup.socialcourses.services.exceptions.InstituicaoNaoEncontradaException;
+import com.startworksgroup.socialcourses.services.exceptions.EntidadeNaoEncontradaException;
 
 @RestController
 @RequestMapping("/cursos")
@@ -41,7 +40,7 @@ public class CursosResources {
 		
 		try {
 			curso = cursosService.salvar(curso);
-		} catch (InstituicaoNaoEncontradaException e) {
+		} catch (EntidadeNaoEncontradaException e) {
 			return ResponseEntity.badRequest().build();
 		}
 		
@@ -62,7 +61,7 @@ public class CursosResources {
 		
 		try {
 			cursosService.atualizar(curso);
-		} catch (CursoNaoEncontradoException e) {
+		} catch (EntidadeNaoEncontradaException e) {
 			return ResponseEntity.notFound().build();
 		}
 			
@@ -74,7 +73,7 @@ public class CursosResources {
 		
 		try {
 			curso = cursosService.buscar(id);
-		} catch (CursoNaoEncontradoException e) {
+		} catch (EntidadeNaoEncontradaException e) {
 			return ResponseEntity.notFound().build();
 		}
 		
@@ -86,7 +85,7 @@ public class CursosResources {
 
 		try {
 			cursosService.deletar(id);
-		} catch (CursoNaoEncontradoException e) {
+		} catch (EntidadeNaoEncontradaException e) {
 			return ResponseEntity.notFound().build();
 		}
 		

@@ -19,7 +19,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.startworksgroup.socialcourses.domain.Instituicao;
 import com.startworksgroup.socialcourses.services.InstituicoesService;
-import com.startworksgroup.socialcourses.services.exceptions.InstituicaoNaoEncontradaException;
+import com.startworksgroup.socialcourses.services.exceptions.EntidadeNaoEncontradaException;
 
 @RestController
 @RequestMapping("/instituicoes")
@@ -57,7 +57,7 @@ public class InstituicoesResources {
 		
 		try {
 			instituicoesService.atualizar(instituicao);
-		} catch (InstituicaoNaoEncontradaException e) {
+		} catch (EntidadeNaoEncontradaException e) {
 			ResponseEntity.notFound().build();
 		}
 		
@@ -70,7 +70,7 @@ public class InstituicoesResources {
 		
 		try {
 			instituicoesService.buscar(id);
-		} catch (InstituicaoNaoEncontradaException e) {
+		} catch (EntidadeNaoEncontradaException e) {
 			return ResponseEntity.notFound().build();
 		}
 		
@@ -81,7 +81,7 @@ public class InstituicoesResources {
 	public ResponseEntity<Void> deletar(@PathVariable("id") Long id) {
 		try {
 			instituicoesService.deletar(id);
-		} catch (InstituicaoNaoEncontradaException e) {
+		} catch (EntidadeNaoEncontradaException e) {
 			return ResponseEntity.notFound().build();
 		}
 		

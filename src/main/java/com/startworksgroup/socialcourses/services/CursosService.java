@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import com.startworksgroup.socialcourses.domain.Curso;
 import com.startworksgroup.socialcourses.domain.Instituicao;
 import com.startworksgroup.socialcourses.repository.CursosRepository;
-import com.startworksgroup.socialcourses.services.exceptions.CursoNaoEncontradoException;
+import com.startworksgroup.socialcourses.services.exceptions.EntidadeNaoEncontradaException;
 
 @Service
 public class CursosService {
@@ -29,7 +29,7 @@ public class CursosService {
 		Optional<Curso> curso = cursosRepository.findById(id);
 		
 		if (!curso.isPresent()){
-			throw new CursoNaoEncontradoException("O curso com id:"+id+" Não foi encontrado.");
+			throw new EntidadeNaoEncontradaException("O curso com id:"+id+" Não foi encontrado.");
 		}
 		
 		return curso;
@@ -56,7 +56,7 @@ public class CursosService {
 		try {
 			cursosRepository.deleteById(id);
 		} catch (EmptyResultDataAccessException e) {
-			throw new CursoNaoEncontradoException("O curso com id:"+id+" Não foi encontrado.");
+			throw new EntidadeNaoEncontradaException("O curso com id:"+id+" Não foi encontrado.");
 		}
 	}
 	

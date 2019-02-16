@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.startworksgroup.socialcourses.domain.Instituicao;
 import com.startworksgroup.socialcourses.repository.InstituicoesRepository;
-import com.startworksgroup.socialcourses.services.exceptions.InstituicaoNaoEncontradaException;
+import com.startworksgroup.socialcourses.services.exceptions.EntidadeNaoEncontradaException;
 
 @Service
 public class InstituicoesService {
@@ -25,7 +25,7 @@ public class InstituicoesService {
 		Optional<Instituicao> instituicao = instituicoesRepository.findById(id);
 		
 		if (!instituicao.isPresent()){
-			throw new InstituicaoNaoEncontradaException("A instituição com id:"+id+" Não foi encontrado.");
+			throw new EntidadeNaoEncontradaException("A instituição com id:"+id+" Não foi encontrado.");
 		}
 		
 		return instituicao;
@@ -43,7 +43,7 @@ public class InstituicoesService {
 		try {
 			instituicoesRepository.deleteById(id);
 		} catch (EmptyResultDataAccessException e) {
-			throw new InstituicaoNaoEncontradaException("A instituição com id:"+id+" Não foi encontrado.");
+			throw new EntidadeNaoEncontradaException("A instituição com id:"+id+" Não foi encontrado.");
 		}
 	}
 	
@@ -57,6 +57,6 @@ public class InstituicoesService {
 	}
 	
 	public void throwInstituicaoNullException() {
-		throw new InstituicaoNaoEncontradaException("A instituição Não foi informada.");
+		throw new EntidadeNaoEncontradaException("A instituição Não foi informada.");
 	}
 }

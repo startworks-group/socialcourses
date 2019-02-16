@@ -1,6 +1,6 @@
 package com.startworksgroup.socialcourses.services.exceptions;
 
-public class CursoNaoEncontradoException extends RuntimeException {
+public class EntidadeNaoEncontradaException extends RuntimeException {
 
 	
 	/**
@@ -8,11 +8,11 @@ public class CursoNaoEncontradoException extends RuntimeException {
 	 */
 	private static final long serialVersionUID = 1343251115485062764L;
 
-	public CursoNaoEncontradoException(String mensagem) {
+	public EntidadeNaoEncontradaException(String mensagem) {
 		super(mensagem);
 	}
 
-	public CursoNaoEncontradoException(String mensagem, Throwable causa) {
+	public EntidadeNaoEncontradaException(String mensagem, Throwable causa) {
 		super(mensagem, causa);
 	}
 }
