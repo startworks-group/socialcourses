@@ -55,8 +55,5 @@ public class InstituicoesService {
 	private void verificarExistencia(Instituicao instituicao) {
 		buscar(instituicao.getId());
 	}
-	
-	public void throwInstituicaoNullException() {
-		throw new EntidadeNaoEncontradaException("A instituição Não foi informada.");
-	}
+
 }

@@ -19,7 +19,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.startworksgroup.socialcourses.domain.Curso;
 import com.startworksgroup.socialcourses.services.CursosService;
-import com.startworksgroup.socialcourses.services.exceptions.EntidadeNaoEncontradaException;
 
 @RestController
 @RequestMapping("/cursos")
@@ -38,11 +37,7 @@ public class CursosResources {
 	@PostMapping
 	public ResponseEntity<?> salvar(@RequestBody Curso curso) {
 		
-		try {
-			curso = cursosService.salvar(curso);
-		} catch (EntidadeNaoEncontradaException e) {
-			return ResponseEntity.badRequest().build();
-		}
+		curso = cursosService.salvar(curso);
 		
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
 				.path("/{id}").buildAndExpand(curso.getId()).toUri();
@@ -59,23 +54,16 @@ public class CursosResources {
 		// Tentar garantir que o curso não terá o id nulo
 		curso.setId(id);
 		
-		try {
-			cursosService.atualizar(curso);
-		} catch (EntidadeNaoEncontradaException e) {
-			return ResponseEntity.notFound().build();
-		}
+		cursosService.atualizar(curso);
 			
 		return ResponseEntity.noContent().build();
 	}
 	@GetMapping("{id}")
 	public ResponseEntity<?> buscar(@PathVariable("id") Long id) {
+		
 		Optional<Curso> curso = null;
 		
-		try {
-			curso = cursosService.buscar(id);
-		} catch (EntidadeNaoEncontradaException e) {
-			return ResponseEntity.notFound().build();
-		}
+		curso = cursosService.buscar(id);
 		
 		return ResponseEntity.status(HttpStatus.OK).body(curso); 
 	}
@@ -83,12 +71,8 @@ public class CursosResources {
 	@DeleteMapping("{id}")
 	public ResponseEntity<Void> deletar(@PathVariable("id") Long id) {
 
-		try {
-			cursosService.deletar(id);
-		} catch (EntidadeNaoEncontradaException e) {
-			return ResponseEntity.notFound().build();
-		}
-		
+		cursosService.deletar(id);
+				
 		return ResponseEntity.noContent().build();
 	}
 }

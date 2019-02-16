@@ -42,9 +42,9 @@ public class CursosService {
 		
 		Instituicao instituicao = curso.getInstituicao();
 		
-		// Evitar NullPointException
+		// Lançando um NullPointException
 		if(instituicao == null) {
-			instituicoesService.throwInstituicaoNullException();
+			throw new NullPointerException("A instituição não foi informada ou informada incorretamente");
 		}
 		
 		instituicoesService.buscar(instituicao.getId());
