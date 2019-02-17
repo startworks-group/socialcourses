@@ -1,5 +1,6 @@
 package com.startworksgroup.socialcourses.services;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -7,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import com.startworksgroup.socialcourses.domain.Comentario;
 import com.startworksgroup.socialcourses.domain.Curso;
 import com.startworksgroup.socialcourses.domain.Instituicao;
+import com.startworksgroup.socialcourses.repository.ComentariosRepository;
 import com.startworksgroup.socialcourses.repository.CursosRepository;
 import com.startworksgroup.socialcourses.services.exceptions.EntidadeNaoEncontradaException;
 
@@ -17,6 +20,9 @@ public class CursosService {
 
 	@Autowired
 	private CursosRepository cursosRepository;
+	
+	@Autowired
+	private ComentariosRepository comentariosRepository;
 	
 	@Autowired
 	private InstituicoesService instituicoesService;
@@ -67,5 +73,14 @@ public class CursosService {
 	
 	private void verificarExistencia(Curso curso) {
 		buscar(curso.getId());
+	}
+	
+	public Comentario salvarComentario(Long cursoId, Comentario comentario) {
+		Curso curso = buscar(cursoId).get(); // utilizar get() porquê é retornado um Optional<Curso>
+		
+		comentario.setCurso(curso);
+		comentario.setData(new Date());
+		
+		return comentariosRepository.save(comentario);
 	}
 }

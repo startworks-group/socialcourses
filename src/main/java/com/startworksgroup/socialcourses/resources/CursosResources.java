@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.startworksgroup.socialcourses.domain.Comentario;
 import com.startworksgroup.socialcourses.domain.Curso;
 import com.startworksgroup.socialcourses.services.CursosService;
 
@@ -75,4 +76,18 @@ public class CursosResources {
 				
 		return ResponseEntity.noContent().build();
 	}
+	
+	@PostMapping("{id}/comentarios")
+	public ResponseEntity<Void> adicionarComentario(
+			@PathVariable("id") Long cursoId,
+			@RequestBody Comentario comentario
+			) {
+		
+		cursosService.salvarComentario(cursoId, comentario);
+		
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().build().toUri();
+		
+		return ResponseEntity.created(uri).build();
+	}
+	
 }
