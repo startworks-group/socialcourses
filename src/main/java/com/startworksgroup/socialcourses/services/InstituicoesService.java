@@ -1,7 +1,7 @@
 package com.startworksgroup.socialcourses.services;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -21,10 +21,12 @@ public class InstituicoesService {
 		return instituicoesRepository.findAll();
 	}
 	
-	public Optional<Instituicao> buscar(Long id) {
-		Optional<Instituicao> instituicao = instituicoesRepository.findById(id);
+	public Instituicao buscar(Long id) {
+		Instituicao instituicao = null;
 		
-		if (!instituicao.isPresent()){
+		try {
+			instituicao = instituicoesRepository.findById(id).get();
+		} catch (NoSuchElementException e) {
 			throw new EntidadeNaoEncontradaException("A instituição com id:"+id+" Não foi encontrado.");
 		}
 		

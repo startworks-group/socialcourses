@@ -2,7 +2,6 @@ package com.startworksgroup.socialcourses.resources;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -61,9 +60,7 @@ public class InstituicoesResources {
 	@GetMapping("{id}")
 	public ResponseEntity<?> buscar(@PathVariable("id") Long id) {
 		
-		Optional<Instituicao> instituicao = null;
-		
-		instituicoesService.buscar(id);
+		Instituicao instituicao = instituicoesService.buscar(id);
 		
 		return ResponseEntity.status(HttpStatus.OK).body(instituicao);
 	}

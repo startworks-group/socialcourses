@@ -2,7 +2,7 @@ package com.startworksgroup.socialcourses.services;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -31,13 +31,15 @@ public class CursosService {
 		return cursosRepository.findAll();
 	}
 	
-	public Optional<Curso> buscar(Long id) {
-		Optional<Curso> curso = cursosRepository.findById(id);
+	public Curso buscar(Long id) {
+		Curso curso = null;
 		
-		if (!curso.isPresent()){
-			throw new EntidadeNaoEncontradaException("O curso com id:"+id+" Não foi encontrado.");
+		try {
+			curso = cursosRepository.findById(id).get();
+		} catch (NoSuchElementException e) {
+			throw new EntidadeNaoEncontradaException("O Curso com id:"+id+" Não foi encontrado.");
 		}
-		
+				
 		return curso;
 	}
 	
@@ -76,7 +78,7 @@ public class CursosService {
 	}
 	
 	public Comentario salvarComentario(Long cursoId, Comentario comentario) {
-		Curso curso = buscar(cursoId).get(); // utilizar get() porquê é retornado um Optional<Curso>
+		Curso curso = buscar(cursoId);
 		
 		comentario.setCurso(curso);
 		comentario.setData(new Date());
