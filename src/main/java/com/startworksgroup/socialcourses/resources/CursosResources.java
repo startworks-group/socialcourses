@@ -4,7 +4,6 @@ import java.net.URI;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,9 +28,9 @@ public class CursosResources {
 	
 	@GetMapping
 	public ResponseEntity<List<Curso>> listar() {
-		List<Curso> result = cursosService.listar();
+		List<Curso> cursos = cursosService.listar();
 		
-		return ResponseEntity.status(HttpStatus.OK).body(result);
+		return ResponseEntity.ok().body(cursos);
 	}
 	
 	@PostMapping
@@ -48,8 +47,7 @@ public class CursosResources {
 	@PutMapping("{id}")
 	public ResponseEntity<Void> atualizar(
 			@RequestBody Curso curso, 
-			@PathVariable("id") Long id
-		) {
+			@PathVariable("id") Long id) {
 		
 		// Tentar garantir que o curso não terá o id nulo
 		curso.setId(id);
@@ -63,7 +61,7 @@ public class CursosResources {
 		
 		Curso curso = cursosService.buscar(id);
 		
-		return ResponseEntity.status(HttpStatus.OK).body(curso); 
+		return ResponseEntity.ok().body(curso); 
 	}
 	
 	@DeleteMapping("{id}")
@@ -77,14 +75,22 @@ public class CursosResources {
 	@PostMapping("{id}/comentarios")
 	public ResponseEntity<Void> adicionarComentario(
 			@PathVariable("id") Long cursoId,
-			@RequestBody Comentario comentario
-			) {
+			@RequestBody Comentario comentario) {
 		
 		cursosService.salvarComentario(cursoId, comentario);
 		
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().build().toUri();
 		
 		return ResponseEntity.created(uri).build();
+	}
+	
+	@GetMapping("{id}/comentarios")
+	public ResponseEntity<List<Comentario>> listarComentarios(
+			@PathVariable("id") Long cursoId) {
+		
+		List<Comentario> comentarios = cursosService.buscarComentarios(cursoId);
+		
+		return ResponseEntity.ok().body(comentarios);
 	}
 	
 }

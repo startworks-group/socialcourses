@@ -85,4 +85,10 @@ public class CursosService {
 		
 		return comentariosRepository.save(comentario);
 	}
+	
+	public List<Comentario>buscarComentarios(Long cursoId) {
+		Curso curso = buscar(cursoId);
+		
+		return curso.getComentarios();
+	}
 }

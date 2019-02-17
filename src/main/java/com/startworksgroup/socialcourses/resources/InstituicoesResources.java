@@ -30,7 +30,7 @@ public class InstituicoesResources {
 	public ResponseEntity<List<Instituicao>> listar() {
 		List<Instituicao> result = instituicoesService.listar();
 		
-		return ResponseEntity.status(HttpStatus.OK).body(result);
+		return ResponseEntity.ok().body(result);
 		
 	}
 	
@@ -62,7 +62,7 @@ public class InstituicoesResources {
 		
 		Instituicao instituicao = instituicoesService.buscar(id);
 		
-		return ResponseEntity.status(HttpStatus.OK).body(instituicao);
+		return ResponseEntity.ok().body(instituicao);
 	}
 	
 	@DeleteMapping("{id}")
